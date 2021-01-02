@@ -1,0 +1,20 @@
+{
+  "name": "blogserver",
+  "version": "1.0.0",
+  "description": "博客server",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "liuchanglong",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-cors": "^0.0.16",
+    "koa-passport": "^4.1.3",
+    "koa-router": "^10.0.0",
+    "mysql": "^2.18.1",
+    "validator": "^13.5.2"
+  }
+}
