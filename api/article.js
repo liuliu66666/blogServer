@@ -1,5 +1,4 @@
 const Router = require("koa-router");
-const Validator = require("validator");
 const router = new Router();
 
 const { isEmpty } = require("../utils/utils");
@@ -40,9 +39,8 @@ router.post("/publish", async (ctx) => {
   console.log(`${new Date()} 发布`, ctx.request.body);
 
   try {
-    ctx.request.body.tags = JSON.stringify(ctx.request.body.tags);
     const { id, title, content, tags, createTime, coverUrl } = ctx.request.body;
-
+    let strTags = JSON.stringify(tags)
     if (
       isEmpty(title) ||
       isEmpty(content) ||
@@ -59,14 +57,16 @@ router.post("/publish", async (ctx) => {
 
     if (id) {
       await query(
-        `UPDATE article SET title='${title}',content='${content}',tags=${tags},createTime='${createTime}',coverUrl='${coverUrl}',type='PUBLISH' WHERE id=${Number(
+        `UPDATE article SET title='${title}',content=${JSON.stringify(
+          content
+        )},tags='${strTags}',createTime='${createTime}',coverUrl='${coverUrl}',type='PUBLISH' WHERE id=${Number(
           id
         )}`
       );
     } else {
       await query(
         "INSERT INTO article(title, content, tags, createTime, coverUrl, type) VALUES(?,?,?,?,?,?)",
-        [title, content, tags, createTime, coverUrl, "PUBLISH"]
+        [title, content, strTags, createTime, coverUrl, "PUBLISH"]
       );
     }
     ctx.body = {
@@ -74,6 +74,7 @@ router.post("/publish", async (ctx) => {
       msg: "发布成功",
     };
   } catch (error) {
+    console.log(`${new Date()} 发布失败`, JSON.stringify(error));
     ctx.body = {
       status: -1,
       msg: "发布失败",
@@ -85,19 +86,20 @@ router.post("/publish", async (ctx) => {
 router.post("/stash", async (ctx) => {
   console.log(`${new Date()} 暂存`, ctx.request.body);
   try {
-    ctx.request.body.tags = JSON.stringify(ctx.request.body.tags);
     const { id, title, content, tags, createTime, coverUrl } = ctx.request.body;
-
+    let strTags = JSON.stringify(tags)
     if (id) {
       await query(
-        `UPDATE article SET title='${title}',content='${content}',tags=${tags},createTime='${createTime}',coverUrl='${coverUrl}',type='STASH' WHERE id=${Number(
+        `UPDATE article SET title='${title}',content=${JSON.stringify(
+          content
+        )},tags='${strTags}',createTime='${createTime}',coverUrl='${coverUrl}',type='STASH' WHERE id=${Number(
           id
         )}`
       );
     } else {
       await query(
         "INSERT INTO article(title, content, tags, createTime, coverUrl, type) VALUES(?,?,?,?,?,?)",
-        [title, content, tags, createTime, coverUrl, "STASH"]
+        [title, content, strTags, createTime, coverUrl, "STASH"]
       );
     }
     ctx.body = {
