@@ -40,7 +40,7 @@ router.post("/publish", async (ctx) => {
 
   try {
     const { id, title, content, tags, createTime, coverUrl } = ctx.request.body;
-    let strTags = JSON.stringify(tags)
+    let strTags = JSON.stringify(tags);
     if (
       isEmpty(title) ||
       isEmpty(content) ||
@@ -87,7 +87,7 @@ router.post("/stash", async (ctx) => {
   console.log(`${new Date()} 暂存`, ctx.request.body);
   try {
     const { id, title, content, tags, createTime, coverUrl } = ctx.request.body;
-    let strTags = JSON.stringify(tags)
+    let strTags = JSON.stringify(tags);
     if (id) {
       await query(
         `UPDATE article SET title='${title}',content=${JSON.stringify(
@@ -153,6 +153,31 @@ router.get("/tags", async (ctx) => {
     ctx.body = {
       status: -1,
       msg: "查询失败",
+    };
+  }
+});
+
+// 删除标签
+router.delete("/tags", async (ctx) => {
+  const { id } = ctx.request.query;
+  console.log(`${new Date()} 删除标签`, ctx.request.query);
+  try {
+    if (id) {
+      await query(`DELETE FROM tags WHERE id=${id}`);
+      ctx.body = {
+        status: 200,
+        msg: "删除成功",
+      };
+    } else {
+      ctx.body = {
+        status: -1,
+        msg: "删除失败，id不存在",
+      };
+    }
+  } catch (error) {
+    ctx.body = {
+      status: -1,
+      msg: "删除失败",
     };
   }
 });
